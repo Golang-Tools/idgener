@@ -17,7 +17,7 @@ const (
 	//AckModeAckWhenGet 获取到后确认
 	IDGEN_UUIDV4 IDGENAlgorithm = iota
 	IDGEN_SNOYFLAKE
-	IDEGN_SNOWFLAKE
+	IDGEN_SNOWFLAKE
 )
 
 //IDGenNameToIDGen 通过名字获得一个IDGen实例
@@ -32,7 +32,7 @@ func IDGenNameToIDGen(idgen_name IDGENAlgorithm) (IDGenInterface, error) {
 		{
 			return NewSonyflakeGen()
 		}
-	case IDEGN_SNOWFLAKE:
+	case IDGEN_SNOWFLAKE:
 		{
 			return NewSnowflakeGen()
 		}
@@ -64,7 +64,7 @@ func Next(idgen_name IDGENAlgorithm) (string, error) {
 		{
 			return DefaultSonyflake.Next()
 		}
-	case IDEGN_SNOWFLAKE:
+	case IDGEN_SNOWFLAKE:
 		{
 			if DefaultSnowflake == nil {
 				return "", errors.New("default snowflake not init ok")
