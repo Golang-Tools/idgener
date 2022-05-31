@@ -3,7 +3,6 @@ package idgener
 
 import (
 	"errors"
-	"strings"
 )
 
 //IDGenInterface 满足该接口的就认为是IDGen
@@ -12,25 +11,34 @@ type IDGenInterface interface {
 	String() string
 }
 
+type IDGENAlgorithm uint8
+
+const (
+	//AckModeAckWhenGet 获取到后确认
+	IDGEN_UUIDV4 IDGENAlgorithm = iota
+	IDGEN_SNOYFLAKE
+	IDEGN_SNOWFLAKE
+)
+
 //IDGenNameToIDGen 通过名字获得一个IDGen实例
 //@params idgen_name string idgen的名字,目前支持uuid4,sonyflake,snowflake
-func IDGenNameToIDGen(idgen_name string) (IDGenInterface, error) {
-	switch strings.ToLower(idgen_name) {
-	case "uuid4":
+func IDGenNameToIDGen(idgen_name IDGENAlgorithm) (IDGenInterface, error) {
+	switch idgen_name {
+	case IDGEN_UUIDV4:
 		{
 			return NewUUID4Gen()
 		}
-	case "sonyflake":
+	case IDGEN_SNOYFLAKE:
 		{
 			return NewSonyflakeGen()
 		}
-	case "snowflake":
+	case IDEGN_SNOWFLAKE:
 		{
 			return NewSnowflakeGen()
 		}
 	default:
 		{
-			return nil, errors.New("unknown IDGen name")
+			return nil, errors.New("unknown IDGen algo name")
 		}
 	}
 }
@@ -46,17 +54,17 @@ var DefaultSonyflake *SonyflakeGen
 
 //Next 使用默认id生成器构造id
 //@params idgen_name string idgen的名字,目前支持uuid4,sonyflake,snowflake
-func Next(idgen_name string) (string, error) {
-	switch strings.ToLower(idgen_name) {
-	case "uuid4":
+func Next(idgen_name IDGENAlgorithm) (string, error) {
+	switch idgen_name {
+	case IDGEN_UUIDV4:
 		{
 			return DefaultUUID4.Next()
 		}
-	case "sonyflake":
+	case IDGEN_SNOYFLAKE:
 		{
 			return DefaultSonyflake.Next()
 		}
-	case "snowflake":
+	case IDEGN_SNOWFLAKE:
 		{
 			if DefaultSnowflake == nil {
 				return "", errors.New("default snowflake not init ok")
