@@ -1,11 +1,11 @@
-//用于生成jwt的id
+// 用于生成jwt的id
 package idgener
 
 import (
 	"errors"
 )
 
-//IDGenInterface 满足该接口的就认为是IDGen
+// IDGenInterface 满足该接口的就认为是IDGen
 type IDGenInterface interface {
 	Next() (string, error)
 	String() string
@@ -18,10 +18,11 @@ const (
 	IDGEN_UUIDV4 IDGENAlgorithm = iota
 	IDGEN_SNOYFLAKE
 	IDGEN_SNOWFLAKE
+	IDGEN_ULID
 )
 
-//IDGenNameToIDGen 通过名字获得一个IDGen实例
-//@params idgen_name string idgen的名字,目前支持uuid4,sonyflake,snowflake
+// IDGenNameToIDGen 通过名字获得一个IDGen实例
+// @params idgen_name string idgen的名字,目前支持uuid4,sonyflake,snowflake
 func IDGenNameToIDGen(idgen_name IDGENAlgorithm) (IDGenInterface, error) {
 	switch idgen_name {
 	case IDGEN_UUIDV4:
@@ -36,6 +37,10 @@ func IDGenNameToIDGen(idgen_name IDGENAlgorithm) (IDGenInterface, error) {
 		{
 			return NewSnowflakeGen()
 		}
+	case IDGEN_ULID:
+		{
+			return NewULIDGen()
+		}
 	default:
 		{
 			return nil, errors.New("unknown IDGen algo name")
@@ -43,17 +48,20 @@ func IDGenNameToIDGen(idgen_name IDGENAlgorithm) (IDGenInterface, error) {
 	}
 }
 
-//DefaultUUID4 默认uuid4id生成器
+// DefaultUUID4 默认uuid4id生成器
 var DefaultUUID4 *UUID4Gen
 
-//DefaultSnowflake 默认snowflake生成器,nodeid为本机MachineID
+// DefaultSnowflake 默认snowflake生成器,nodeid为本机MachineID
 var DefaultSnowflake *SnowflakeGen
 
-//DefaultSonyflake 默认的sonyflake生成器,使用本机MachineID作为MachineID
+// DefaultSonyflake 默认的sonyflake生成器,使用本机MachineID作为MachineID
 var DefaultSonyflake *SonyflakeGen
 
-//Next 使用默认id生成器构造id
-//@params idgen_name string idgen的名字,目前支持uuid4,sonyflake,snowflake
+// DefaultULID 默认的ulid生成器
+var DefaultULID *ULIDGen
+
+// Next 使用默认id生成器构造id
+// @params idgen_name string idgen的名字,目前支持uuid4,sonyflake,snowflake
 func Next(idgen_name IDGENAlgorithm) (string, error) {
 	switch idgen_name {
 	case IDGEN_UUIDV4:
@@ -71,6 +79,10 @@ func Next(idgen_name IDGENAlgorithm) (string, error) {
 			}
 			return DefaultSnowflake.Next()
 		}
+	case IDGEN_ULID:
+		{
+			return DefaultUUID4.Next()
+		}
 	default:
 		{
 			return "", errors.New("unknown IDGen name")
@@ -82,4 +94,5 @@ func init() {
 	DefaultUUID4, _ = NewUUID4Gen()
 	DefaultSonyflake, _ = NewSonyflakeGen()
 	DefaultSnowflake, _ = NewSnowflakeGen()
+	DefaultULID, _ = NewULIDGen()
 }

@@ -3,6 +3,7 @@ module github.com/Golang-Tools/idgener
 require (
 	github.com/Golang-Tools/optparams v0.0.1
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/oklog/ulid/v2 v2.1.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sony/sonyflake v1.0.0
 	github.com/stretchr/testify v1.7.1
